@@ -11,10 +11,7 @@
  * Thanks to vor, eskimoblood, spiffistan, FabrizioC
  */
 (function (factory) {
-    if (typeof exports === 'object') {
-        // CommonJS
-        module.exports = factory(require('jquery'));
-    } else if (typeof define === 'function' && define.amd) {
+    if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['jquery'], factory);
     } else {
@@ -116,7 +113,7 @@
                     fgColor: this.$.data('fgcolor') || '#87CEEB',
                     inputColor: this.$.data('inputcolor'),
                     font: this.$.data('font') || 'Arial',
-                    fontWeight: this.$.data('font-weight') || 'bold',
+                    fontWeight: this.$.data('font-weight') || 'normal',
                     inline: false,
                     step: this.$.data('step') || 1,
                     rotation: this.$.data('rotation'),
@@ -153,7 +150,7 @@
                     var $this = $(this);
                     s.i[k] = $this;
                     s.v[k] = s.o.parse($this.val());
-
+										
                     $this.bind(
                         'change blur',
                         function () {
@@ -168,7 +165,7 @@
 
                 // input = integer
                 this.i = this.$;
-                this.v = this.o.parse(this.$.val());
+               // this.v = this.o.parse(this.$.val());
                 this.v === '' && (this.v = this.o.min);
                 this.$.bind(
                     'change blur',
@@ -189,8 +186,8 @@
 
             // wraps all elements in a div
             // add to DOM before Canvas init is triggered
-            this.$div = $('<div style="'
-                + (this.o.inline ? 'display:inline;' : '')
+            this.$div = $('<div style="position: relative; '
+                + (this.o.inline ? 'display:block;' : '')
                 + 'width:' + this.o.width + 'px;height:' + this.o.height + 'px;'
                 + '"></div>');
 
@@ -270,7 +267,8 @@
                         : this.$div.parent().height();
 
                 // apply relative
-                this.w = this.h = Math.min(w, h);
+                //this.w = this.h = Math.min(w, h);
+                this.w = this.h = w;
             } else {
                 this.w = this.o.width;
                 this.h = this.o.height;
@@ -455,8 +453,8 @@
         };
 
         this._validate = function (v) {
-            var val = (~~ (((v < 0) ? -0.5 : 0.5) + (v/this.o.step))) * this.o.step;
-            return Math.round(val * 100) / 100;
+            var val = (~~ (((v < 0) ? -0.5 : 0.5) + (v/this.o.step))) * this.o.step;            
+						return Math.round(val * 100) / 100;
         };
 
         // Abstract methods
@@ -673,10 +671,14 @@
         };
 
         this.init = function () {
+
+
             if (this.v < this.o.min
                 || this.v > this.o.max) { this.v = this.o.min; }
 
-            this.$.val(this.v);
+            //console.log("value: "  + this.v);
+
+            this.$.val(this.o.format(this.v));
             this.w2 = this.w / 2;
             this.cursorExt = this.o.cursor / 100;
             this.xy = this.w2 * this.scale;
@@ -706,12 +708,12 @@
 
             this.o.displayInput
                 && this.i.css({
-                        'width' : ((this.w / 2 + 4) >> 0) + 'px',
-                        'height' : ((this.w / 3) >> 0) + 'px',
+												'width' : '100%',
+												'height' : '30px',
                         'position' : 'absolute',
-                        'vertical-align' : 'middle',
-                        'margin-top' : ((this.w / 3) >> 0) + 'px',
-                        'margin-left' : '-' + ((this.w * 3 / 4 + 2) >> 0) + 'px',
+												'margin-top': '-15px',
+												'top': '50%',
+												'left': '0',
                         'border' : 0,
                         'background' : 'none',
                         'font' : this.o.fontWeight + ' ' + ((this.w / s) >> 0) + 'px ' + this.o.font,
